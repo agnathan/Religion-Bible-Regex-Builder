@@ -9,6 +9,7 @@ WriteMakefile(
     ABSTRACT_FROM       => 'lib/Religion/Bible/Regex/Builder.pm',
     PL_FILES            => {},
     PREREQ_PM => {
+        'Religion::Bible::Regex::Config' => 0,
         'Test::More' => 0,
         'version'    => 0,
     },

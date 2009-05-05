@@ -1,6 +1,7 @@
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 BEGIN {
+use_ok( 'Religion::Bible::Regex::Config' );
 use_ok( 'Religion::Bible::Regex::Builder' );
 }
 

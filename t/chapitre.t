@@ -3,8 +3,8 @@ use t::TestConfig;
 plan tests => 1 * blocks;
 
 filters {
-    yaml => [config => 'dumper'],
-#    perl => [strict => eval => 'dumper'],
+    yaml => [config => 'dumper' => 'chomp'],
+    perl => ['chomp'],
 };
 
 sub config { 

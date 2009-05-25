@@ -1,0 +1,16 @@
+<books>
+    <9>
+        <Match>
+            Book   1Samuel
+            Book   1 Samuel
+            Book   1 Samuel
+            Abbreviation   1S
+            Abbreviation   1 S
+            Abbreviation   1 S
+        </Match>
+        <Normalized>
+            Book   1Samuel
+            Abbreviation   1S
+        </Normalized>
+    </9>
+</books>

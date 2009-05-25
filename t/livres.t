@@ -16,7 +16,6 @@ sub wsnoise {
     s/(?:\s*|\n)//g;
 }
 
-
 run_is yaml => 'perl';
 
 __END__

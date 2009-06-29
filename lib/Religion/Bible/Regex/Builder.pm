@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.9.2');
+use version; our $VERSION = qv('.97');
 use Data::Dumper;
 
 # Input files are assumed to be in the UTF-8 strict character encoding.
@@ -45,15 +45,35 @@ sub new {
     #################################################################################### 
     #	Définitions des chiffres
     #################################################################################### 
-    # chapitre : c'est un nombre qui indique un chapitre
-    my $chapitre = qr/\d{1,3}/;
+    # chapitre : c'est un chiffre inférieur à 150 qui indique un chapitre
+    #            le chapitre avec le grand chiffre dans la Bible est Psaume 150
+    # regex for roman numbers less than 150
+    # \b(?:(?:CL|(?:C(XL|X?X?X?)(IX|IV|V?I?I?I?)))|(?:(XC|XL|L?X?X?X?)(IX|IV|V?I?I?I?)))\b
+    my $chapitre = qr/(?:150)|(?:1[01234]\d)|\b\d{1,2}\b/;
     $self->_set_regex(	'chapitre', 
 			$configs{'chapitre'}, 
                         $chapitre
 		    );
 
-    # verset : c'est un nombre qui indique un verset
-    my $verset = qr/\d{1,3}[abcdes]?/;
+    # verset_number : c'est un chiffre inférieur à 176 qui indique un verset
+    #                 le plus grand verset dans la Bible est Psaume 119:176
+    # regex for roman numbers less than 176
+    # \b(?:(?:CLXX(IV|II|III|V?I?)|(?:C(XL|X?X?X?)(IV|V?I?I?I?)))|(?:CLX?(IX|IV|V?I?I?I?)|(?:C(XL|X?X?X?)(IX|IV|V?I?I?I?)))|(?:(XC|XL|L?X?X?X?)(IX|IV|V?I?I?I?)))\b
+    my $verse_number = qr/\b(?:17[0123456]|1[0123456]\d|\d{1,2})\b/;
+    $self->_set_regex(	'verse_number', 
+			$configs{'verse_number'}, 
+			$verse_number
+		    );
+
+    # verset_letter : c'est un lettre miniscule a la fin d'un verset
+    my $verse_letter = qr/[a-z]/;
+    $self->_set_regex(	'verse_letter', 
+			$configs{'verse_letter'}, 
+			$verse_letter
+		    );
+
+    # verset : c'est un chiffre et lettre qui indique un verset ou une partie de celle-ci
+    my $verset = qr/(?:$self->{verse_number})(?:$self->{verse_letter})?/;
     $self->_set_regex(	'verset', 
 			$configs{'verset'}, 
 			$verset
@@ -62,9 +82,9 @@ sub new {
     # chiffre : c'est un nombre qui indique un chapitre ou verset 
     my $chiffre = qr/\d{1,3}[abcdes]?/;
     $self->_set_regex(	'chiffre', 
-			$configs{'chiffre'}, 
-			$chiffre
-		    );
+    			$configs{'chiffre'}, 
+    			$chiffre
+    		    );
 
 
     #################################################################################### 
@@ -356,7 +376,7 @@ sub new {
     $self->_set_regex(	'reference_biblique', 
 			$configs{'reference_biblique'}, 
                         $reference_biblique
-		     );
+	);
 
     # reference_biblique_list : Cette expression régulière correspond à une liste de références bibliques 
     #				ex. '1 Ti 1.19 ; Ge 1:1, 2:16-18' or '1 Ti 1.19 ; 2Ti 2:16-18'
@@ -382,15 +402,17 @@ sub new {
 
     $self->_set_regex(	'reference_biblique_list', 
 			$configs{'reference_biblique_list'}, 
-		    $reference_biblique_list
-		    );
+			$reference_biblique_list
+	);
 
     return $self;
 }
 
 sub abbreviation {
     my $self = shift;
-    my $key = shift;
+    my $key = shift || '';
+
+#    return unless defined($key);
 
     chomp($key);
 
@@ -406,6 +428,9 @@ sub abbreviation {
 sub book {
     my $self = shift;
     my $key = shift;
+
+    return unless defined($key);
+
     chomp($key);
 
 #    return $self->{key2book}{$key} if ($key =~ /\d/);

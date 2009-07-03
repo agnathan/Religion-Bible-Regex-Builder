@@ -19,7 +19,7 @@ __END__
 --- yaml
 ---
 --- perl
-qr/(?-xism:(?:150)|(?:1[01234]\d)|\b\d{1,2}\b)/
+qr/(?-xism:(?:150)|(?:1[01234]\d)|\d{1,2})/
 === chapitre is set to the default ','
 --- yaml
 ---

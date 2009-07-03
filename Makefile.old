@@ -42,7 +42,7 @@ LIBC = /lib/libc-2.9.so
 LIB_EXT = .a
 OBJ_EXT = .o
 OSNAME = linux
-OSVERS = 2.6.24-19-server
+OSVERS = 2.6.24-23-server
 RANLIB = :
 SITELIBEXP = /usr/local/share/perl/5.10.0
 SITEARCHEXP = /usr/local/lib/perl/5.10.0
@@ -57,11 +57,11 @@ DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
 NAME = Religion::Bible::Regex::Builder
 NAME_SYM = Religion_Bible_Regex_Builder
-VERSION = v.96
+VERSION = v.97
 VERSION_MACRO = VERSION
-VERSION_SYM = v_96
+VERSION_SYM = v_97
 DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
-XS_VERSION = v.96
+XS_VERSION = v.97
 XS_VERSION_MACRO = XS_VERSION
 XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
 INST_ARCHLIB = blib/arch
@@ -252,7 +252,7 @@ RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
 DISTNAME = Religion-Bible-Regex-Builder
-DISTVNAME = Religion-Bible-Regex-Builder-v.96
+DISTVNAME = Religion-Bible-Regex-Builder-v.97
 
 
 # --- MakeMaker macro section:
@@ -473,7 +473,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) Generating META.yml
 	$(NOECHO) $(ECHO) '--- #YAML:1.0' > META_new.yml
 	$(NOECHO) $(ECHO) 'name:                Religion-Bible-Regex-Builder' >> META_new.yml
-	$(NOECHO) $(ECHO) 'version:             v.96' >> META_new.yml
+	$(NOECHO) $(ECHO) 'version:             v.97' >> META_new.yml
 	$(NOECHO) $(ECHO) 'abstract:            builds regular expressions that match Bible References' >> META_new.yml
 	$(NOECHO) $(ECHO) 'license:             ~' >> META_new.yml
 	$(NOECHO) $(ECHO) 'author:              ' >> META_new.yml
@@ -754,7 +754,7 @@ testdb_static :: testdb_dynamic
 # --- MakeMaker ppd section:
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd :
-	$(NOECHO) $(ECHO) '<SOFTPKG NAME="$(DISTNAME)" VERSION="v,96,0,0">' > $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '<SOFTPKG NAME="$(DISTNAME)" VERSION="v,97,0,0">' > $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <TITLE>$(DISTNAME)</TITLE>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <ABSTRACT>builds regular expressions that match Bible References</ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Daniel Holmlund &lt;holmlund.dev@gmail.com&gt;</AUTHOR>' >> $(DISTNAME).ppd

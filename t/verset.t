@@ -19,7 +19,7 @@ __END__
 --- yaml
 ---
 --- perl
-qr/(?-xism:(?:(?-xism:\b(?:17[0123456]|1[0123456]\d|\d{1,2})\b))(?:(?-xism:[a-z]))?)/
+qr/(?-xism:(?:(?-xism:(?:17[0123456]|1[0123456]\d|\d{1,2})))(?:(?-xism:[a-z]))?)/
 === verset is set to the default ','
 --- yaml
 ---

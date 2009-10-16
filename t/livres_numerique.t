@@ -62,5 +62,4 @@ books:
       Book: 2Samuel
       Abbreviation: 2Sbooks:
 --- perl
-qr/(?-xism:2Samuel|2 Samuel|2 Samuel|1Samuel|1 Samuel|1 Samuel)/
-
+qr/(?-xism:1 S|1 Samuel|2 S|2 Samuel|S|Samuel)/

@@ -13,37 +13,22 @@ run {
     my $yaml_loader = YAML::Loader->new();
     my $bookconfig = $yaml_loader->load($block->yaml); 
 
-#    print Dumper $bookconfig;
-    # Foreach match book return the normalized abbreviation
-    while ( my ($key, $value) = each(%{$bookconfig->{books}})) {
-	foreach my $mb (@{$value->{Match}->{Book}}) {
-	        my $result = $r->abbreviation($mb);
-		my $expected = $value->{Normalized}->{Abbreviation};
-		is_deeply($result, $expected, $block->name . ": with the matchbook='$mb', result='$result', expected='$expected'");
-	}
-    }
-
     # Foreach key return the normalized abbreviation
     while ( my ($key, $value) = each(%{$bookconfig->{books}})) {
-	my $result = $r->abbreviation($key);
-	my $expected = $value->{Normalized}->{Abbreviation};
-	is_deeply($result, $expected, $block->name . ": with the key='$key', result='$result', expected='$expected' ");
+      my $result = $r->abbreviation($key);
+    	my $expected = $value->{Normalized}->{Abbreviation};
+    	is_deeply($result, $expected, $block->name . ": with the key='$key', result='$result', expected='$expected' ");
     }
 
-
-    # # Given a key return the abbreviation
-    # my $result = $r->abbreviation($block->key);
-    # my $expected = $block->abbreviation;
-    # chomp $expected;
-    # is_deeply($result, $expected, $block->name . ": with the abbreviation");
-
-    # # Given a book return the abbreviation
-    # $result = $r->abbreviation($block->book);
-    # $expected = $block->abbreviation;
-    # chomp $expected;
-    # is_deeply($result, $expected, $block->name . ": asking with the canonical book name");
-
-};
+    # Foreach match book return the normalized abbreviation
+    while ( my ($key, $value) = each(%{$bookconfig->{books}})) {
+    	foreach my $mb (@{$value->{Match}->{Book}}) {
+  	    my $result = $r->abbreviation($mb);
+    		my $expected = $value->{Normalized}->{Abbreviation};
+    		is_deeply($result, $expected, $block->name . ": with the matchbook='$mb', result='$result', expected='$expected'");
+  	  }
+    }
+  };
 
 
 __END__

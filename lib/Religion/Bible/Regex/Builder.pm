@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('.97');
+use version; our $VERSION = '0.98';
 use Data::Dumper;
 
 # Input files are assumed to be in the UTF-8 strict character encoding.
@@ -49,7 +49,7 @@ sub new {
     #            le chapitre avec le grand chiffre dans la Bible est Psaume 150
     # regex for roman numbers less than 150
     # \b(?:(?:CL|(?:C(XL|X?X?X?)(IX|IV|V?I?I?I?)))|(?:(XC|XL|L?X?X?X?)(IX|IV|V?I?I?I?)))\b
-    my $chapitre = qr/(?:150)|(?:1[01234]\d)|\d{1,2}/;
+    my $chapitre = qr/(?:\b150\b)|(?:\b1[01234]\d\b)|\b\d{1,2}\b/;
     $self->_set_regex(	'chapitre', 
 			$configs{'chapitre'}, 
                         $chapitre
@@ -73,7 +73,7 @@ sub new {
 	);
 
     # verset : c'est un chiffre et lettre qui indique un verset ou une partie de celle-ci
-    my $verset = qr/(?:$self->{verse_number})(?:$self->{verse_letter})?/;
+    my $verset = qr/\b(?:$self->{verse_number})(?:$self->{verse_letter})?\b/;
     $self->_set_regex(	'verset', 
 			$configs{'verset'}, 
 			$verset
@@ -214,7 +214,7 @@ sub new {
     $self->_set_regex(	'voir_mots', 
 			$configs{'voir_mots'},  
                         $voir_mots
-	);
+	  );
 
     #################################################################################### 
     # Définitions de les expressions avec livres 
@@ -226,13 +226,13 @@ sub new {
     /x;
 
     $self->_set_regex(	'livres_numerique', 
-			$configs{'livres_numerique'}, 
-                        $livres_numerique
-	);
+        $configs{'livres_numerique'}, 
+        $livres_numerique
+	  );
 
     my $livres_numerique_protect = "";
-    if (defined($self->{'livres_numerique'})) {
-        $livres_numerique_protect = qr/(?!(?:[\s ]*(?:$livres_numerique)))/;
+    if ($self->{'livres_numerique'} ne '(?-xism:)') {
+        $livres_numerique_protect = qr/(?!(?:[\s ]*(?:$self->{livres_numerique})))/;
     }
     $self->_set_regex(   'livres_numerique_protect',
 			 $configs{'livres_numerique_protect'},
@@ -439,7 +439,7 @@ sub book {
 
     chomp($key);
 
-#    return $self->{key2book}{$key} if ($key =~ /\d/);
+    return $self->{key2book}{$key} if ($key =~ /^\d$/);
 
     # try a lookup just in case $key eq 'Pr' or 'Genèse'    
     my $foundkey = $self->key($key);
@@ -474,8 +474,8 @@ sub bookname_type {
 ################################################################################
 sub _set_regex {
     my ($self, $key, $regex, $default_regex) = @_;
-#    return '' if (m/^$/ =~ $regex);
-	if (defined($regex)) {
+#    return if (m/^$/ =~ $regex);
+  	if (defined($regex)) {
         my $result = eval { qr/$regex/ };	        # Evaluate that line
         if ($@) {                       	# Check for compile or run-time errors.
             croak "Invalid regex:\n $regex";
@@ -484,9 +484,9 @@ sub _set_regex {
         }
     } elsif (defined($regex) && $regex eq ''){
        return; 
-	} else {
-		$self->{$key} = $default_regex; 
-	}
+	  } else {
+  		$self->{$key} = $default_regex; 
+	  }
 }
 
 sub _set_hash {
@@ -599,25 +599,37 @@ sub _init_book_and_abbreviation_data_structures {
 
     my $regex;
     my (@livres, @livres_numerique, @abbreviations);    # Array for all match books and another for match books starting with a number
-    my (%book2key, %abbr2key, %key2abbr, %key2book);    # Mappings between match books and abbreviations and the primary key
+    my (%book2key, %abbr2key, %key2abbr, %key2book, %ln);    # Mappings between match books and abbreviations and the primary key
     
     # Loop through each number and gather the books
     while ( my ($key, $value) = each %{$config} ) {
         # Loop through 
         foreach my $livre (@{$value->{Match}{Book}}) {
             push @livres, $livre;
-            push @livres_numerique, $livre if ($livre =~ m/^\d+/);
             $book2key{$livre} = $key;
+            if ($livre =~ m/^\d+/) {
+              $livre =~ s/\d+[\s ]*([A-Za-z]+)/$1/xg;
+              $ln{$livre} = 1;
+              
+            }
         }
         # Loop through 
         foreach my $abbreviation (@{$value->{Match}{Abbreviation}}) {
             push @abbreviations, $abbreviation;
             $abbr2key{$abbreviation} = $key;
+            if ($abbreviation =~ m/^\d+/) {
+              $abbreviation =~ s/\d+[\s ]*([A-Za-z]+)/$1/xg;
+              $ln{$abbreviation} = 1;
+            }
         }
         $key2abbr{$key} = $value->{Normalized}{Abbreviation};
         $key2book{$key} = $value->{Normalized}{Book};
     }
      
+    foreach my $y (sort(keys %ln)) {
+      push @livres_numerique, $y;
+    }
+
     $retval->{'livres'} = _join_regex(\@livres);
     $retval->{'abbreviations'} = _join_regex(\@abbreviations);
     $retval->{'livres_numerique'} = _join_regex(\@livres_numerique);

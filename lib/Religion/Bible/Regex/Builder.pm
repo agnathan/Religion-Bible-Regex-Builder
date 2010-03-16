@@ -205,14 +205,14 @@ sub new {
     # verset_contexte_mots_avant : les mots qui indique que le prochain référence est un verset référence
     my $verset_mots = qr/(?:vv?\.)/;
     $self->_set_regex(	'verset_mots', 
-			$configs{'verset_mots'},  
+                        $configs{'verset_mots'},  
                         $verset_mots
 	);
 
     # voir_contexte_mots_avant : les mots qui indique que le prochain référence est un verset référence
     my $voir_mots = qr/(?:voir)/;
     $self->_set_regex(	'voir_mots', 
-			$configs{'voir_mots'},  
+                        $configs{'voir_mots'},  
                         $voir_mots
 	  );
 
@@ -380,8 +380,35 @@ sub new {
     /x;
 
     $self->_set_regex(	'reference_biblique', 
-			$configs{'reference_biblique'}, 
-                        $reference_biblique
+                         $configs{'reference_biblique'}, 
+                         $reference_biblique
+	);
+
+    # explicit_reference_biblique : Cette expression régulière correspond à une liste de références bibliques explicit 
+    #                               Il faut avoir le livre et chapitre au moins
+    #				ex. '1 Ti 1.19 ; Ge 1:1, 2:16-18' or '1 Ti 1.19 ; 2Ti 2:16-18'
+    my $explicit_reference_biblique = qr/
+    (?:
+      $self->{'livres_et_abbreviations'}
+      $spaces # Spaces
+      (?: # Chapitre Verset liste
+        $self->{'cv_list'}
+      )
+      (?: # Reference List
+        $spaces # Spaces
+        $self->{'cl_ou_vl_separateurs'}
+        $spaces # Spaces
+        $self->{'livres_numerique_protect'}
+        (?: # Chapitre Verset liste
+          $self->{'cv_list'}
+        )
+      )*
+    )
+    /x;
+
+    $self->_set_regex(	'explicit_reference_biblique', 
+            			$configs{'explicit_reference_biblique'}, 
+                        $explicit_reference_biblique
 	);
 
     # reference_biblique_list : Cette expression régulière correspond à une liste de références bibliques 
@@ -518,6 +545,7 @@ sub _process_config {
     # If this configuration value is a string, then copy it to the data structure
     #    that is being returned
     while ( my ($key, $value) = each(%{$config}) ) {
+        $value = '' unless defined($value);
         if ($key =~ m/books/) {
             $self->_init_book_and_abbreviation_data_structures($value, $retval);
         } elsif ($value =~ m/^(?:fichier|file):/) {

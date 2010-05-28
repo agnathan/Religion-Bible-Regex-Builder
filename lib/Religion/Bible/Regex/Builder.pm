@@ -48,8 +48,9 @@ sub new {
     # chapitre : c'est un chiffre inférieur à 150 qui indique un chapitre
     #            le chapitre avec le grand chiffre dans la Bible est Psaume 150
     # regex for roman numbers less than 150
-    # \b(?:(?:CL|(?:C(XL|X?X?X?)(IX|IV|V?I?I?I?)))|(?:(XC|XL|L?X?X?X?)(IX|IV|V?I?I?I?)))\b
-    my $chapitre = qr/(?:\b150\b)|(?:\b1[01234]\d\b)|\b\d{1,2}\b/;
+    # (?:(?:CL|(?:C(XL|X?X?X?)(IX|IV|V?I?I?I?)))|(?:(XC|XL|L?X?X?X?)(IX|IV|V?I?I?I?)))
+    #my $chapitre = qr/(?:\b150\b)|(?:\b1[01234]\d\b)|\b\d{1,2}\b/;
+    my $chapitre = qr/(?:17[0123456]|1[0123456]\d|\d{1,2})/;
     $self->_set_regex(	'chapitre', 
 			$configs{'chapitre'}, 
                         $chapitre
@@ -58,7 +59,7 @@ sub new {
     # verset_number : c'est un chiffre inférieur à 176 qui indique un verset
     #                 le plus grand verset dans la Bible est Psaume 119:176
     # regex for roman numbers less than 176
-    # \b(?:(?:CLXX(IV|II|III|V?I?)|(?:C(XL|X?X?X?)(IV|V?I?I?I?)))|(?:CLX?(IX|IV|V?I?I?I?)|(?:C(XL|X?X?X?)(IX|IV|V?I?I?I?)))|(?:(XC|XL|L?X?X?X?)(IX|IV|V?I?I?I?)))\b
+    # (?:(?:CLXX(IV|II|III|V?I?)|(?:C(XL|X?X?X?)(IV|V?I?I?I?)))|(?:CLX?(IX|IV|V?I?I?I?)|(?:C(XL|X?X?X?)(IX|IV|V?I?I?I?)))|(?:(XC|XL|L?X?X?X?)(IX|IV|V?I?I?I?)))
     my $verse_number = qr/(?:17[0123456]|1[0123456]\d|\d{1,2})/;
     $self->_set_regex(	'verse_number', 
 			$configs{'verse_number'}, 
@@ -66,14 +67,14 @@ sub new {
 	);
 
     # verset_letter : c'est un lettre miniscule a la fin d'un verset
-    my $verse_letter = qr/[a-z]/;
-    $self->_set_regex(	'verse_letter', 
-			$configs{'verse_letter'}, 
-			$verse_letter
+    my $verset_letter = qr/[a-z]/;
+    $self->_set_regex(	'verset_letter', 
+			$configs{'verset_letter'}, 
+			$verset_letter
 	);
 
     # verset : c'est un chiffre et lettre qui indique un verset ou une partie de celle-ci
-    my $verset = qr/\b(?:$self->{verse_number})(?:$self->{verse_letter})?\b/;
+    my $verset = qr/(?:$self->{verse_number})(?:$self->{verset_letter})?/;
     $self->_set_regex(	'verset', 
 			$configs{'verset'}, 
 			$verset

@@ -15,11 +15,6 @@ sub config {
 run_is yaml => 'perl';
 
 __END__
-=== verset is not set
---- yaml
----
---- perl
-qr/(?-xism:\b(?:(?-xism:(?:17[0123456]|1[0123456]\d|\d{1,2})))(?:(?-xism:[a-z]))?\b)/
 === verset is set to the default ','
 --- yaml
 ---

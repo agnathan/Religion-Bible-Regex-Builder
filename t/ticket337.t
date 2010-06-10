@@ -1,41 +1,10 @@
 use t::TestConfig;
-use utf8;
 use Data::Dumper;
 no warnings;
 
-plan tests => 252;
-
-run {
-    my $block = shift;
-    my $c = new Religion::Bible::Regex::Config($block->yaml); 
-    my $r = new Religion::Bible::Regex::Builder($c);
+plan tests => 21;
     
-    my $yaml_loader = YAML::Loader->new();
-    my $bookconfig = $yaml_loader->load($block->yaml); 
-
-    # Foreach key return the normalized abbreviation
-    while ( my ($key, $value) = each(%{$bookconfig->{books}})) {
-      my $result = $r->abbreviation($key);
-    	my $expected = $value->{Normalized}->{Abbreviation};
-    	is_deeply($result, $expected, $block->name . ": with the key='$key', result='$result', expected='$expected' ");
-    }
-
-    # Foreach match book return the normalized abbreviation
-    while ( my ($key, $value) = each(%{$bookconfig->{books}})) {
-    	foreach my $mb (@{$value->{Match}->{Book}}) {
-  	    my $result = $r->abbreviation($mb);
-    		my $expected = $value->{Normalized}->{Abbreviation};
-    		is_deeply($result, $expected, $block->name . ": with the matchbook='$mb', result='$result', expected='$expected'");
-  	  }
-    }
-  };
-
-
-__END__
-
-=== many books
---- yaml
----
+my $yaml = <<"YAML";
 books:
   1: 
     Match:
@@ -348,7 +317,7 @@ books:
   45: 
     Match:
       Book: ['Romains']
-      Abbreviation: ['Ro']
+      Abbreviation: ['Ro', 'Rm']
     Normalized: 
       Book: Romains
       Abbreviation: Ro
@@ -618,3 +587,23 @@ books:
     Normalized: 
       Book: 2Psalm
       Abbreviation: 2Ps
+
+regex:
+  livres_avec_un_chapitre: (?:Ab|Abdias|2Jn|2Jean|Phm|Philemon|Philémon|Jud|Jude|3Jn|3Jean)
+
+YAML
+
+my $c = new Religion::Bible::Regex::Config($yaml); 
+my $b = new Religion::Bible::Regex::Builder($c);
+
+run {
+    my $block = shift;
+    is($block->input =~ m/^$b->{'reference_biblique'}$/, $block->state, $block->name);
+};
+
+__END__
+=== LC Jude 4
+--- input chomp
+Rm 3.21ss
+--- state chomp
+1

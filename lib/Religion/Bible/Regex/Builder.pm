@@ -67,7 +67,7 @@ sub new {
 	);
 
     # verset_letter : c'est un lettre miniscule a la fin d'un verset
-    my $verset_letter = qr/[a-z]/;
+    my $verset_letter = qr/(?:([a-z]|ss))/x;
     $self->_set_regex(	'verset_letter', 
 			$configs{'verset_letter'}, 
 			$verset_letter

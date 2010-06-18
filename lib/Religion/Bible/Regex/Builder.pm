@@ -67,7 +67,7 @@ sub new {
 	);
 
     # verset_letter : c'est un lettre miniscule a la fin d'un verset
-    my $verset_letter = qr/(?:([a-z]|ss))/x;
+    my $verset_letter = qr/(?:[a-z]|ss)/x;
     $self->_set_regex(	'verset_letter', 
 			$configs{'verset_letter'}, 
 			$verset_letter
@@ -325,8 +325,8 @@ sub new {
     # sauf si vous savez ce que vous faites.
 
     my $cv_list = qr/
-        $self->{'chapitre'} # LC, '22'
         $self->{'livres_numerique_protect'}
+        $self->{'chapitre'} # LC, '22'
         (?: # Choose between CV and Interval
           (?:
             (?:# LCC: Ge 22-24

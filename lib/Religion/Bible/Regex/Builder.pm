@@ -50,7 +50,7 @@ sub new {
     # regex for roman numbers less than 150
     # (?:(?:CL|(?:C(XL|X?X?X?)(IX|IV|V?I?I?I?)))|(?:(XC|XL|L?X?X?X?)(IX|IV|V?I?I?I?)))
     #my $chapitre = qr/(?:\b150\b)|(?:\b1[01234]\d\b)|\b\d{1,2}\b/;
-    my $chapitre = qr/(?:17[0123456]|1[0123456]\d|\d{1,2})/;
+    my $chapitre = qr/\b(?:17[0123456]|1[0123456]\d|\d{1,2})\b/;
     $self->_set_regex(	'chapitre', 
 			$configs{'chapitre'}, 
                         $chapitre
